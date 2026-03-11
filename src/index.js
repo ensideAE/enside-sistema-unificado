@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -13,14 +12,14 @@ app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE','OPTIONS'], al
 app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', sistema: 'Enside Sistema Unificado', versao: '1.0.0', timestamp: new Date().toISOString() }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/docs', docsRoutes);
-app.use('/', adminRoutes);
-app.get('/api/health', (req, res) => res.json({ status: 'ok', sistema: 'Enside Sistema Unificado', versao: '1.0.0', timestamp: new Date().toISOString() }));
 app.use('/api/*', (req, res) => res.status(404).json({ erro: 'Endpoint não encontrado' }));
+app.use('/', adminRoutes);
 app.use((err, req, res, next) => { console.error(err.message); res.status(500).json({ erro: 'Erro interno', detalhes: err.message }); });
 if (process.env.NODE_ENV !== 'production') { app.listen(process.env.PORT || 3000, () => console.log('🚀 Rodando!')); }
 module.exports = app;
