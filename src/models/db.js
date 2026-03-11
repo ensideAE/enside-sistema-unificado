@@ -6,7 +6,7 @@ const db = {
       id: '1',
       nome: 'Admin Enside',
       email: 'admin@enside.com.br',
-      senha: '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+      senhaPlain: 'password',
       role: 'admin',
       ativo: true,
       criadoEm: new Date().toISOString()
