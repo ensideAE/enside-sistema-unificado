@@ -19,7 +19,17 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/docs', docsRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok', sistema: 'Enside Sistema Unificado', versao: '1.0.0', timestamp: new Date().toISOString() }));
-app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, '../public/dashboard/index.html')));
+app.get('/', (req, res) => {
+  const fs = require('fs');
+  const possiblePaths = [
+    path.join(__dirname, '../public/dashboard/index.html'),
+    path.join(process.cwd(), 'public/dashboard/index.html'),
+    '/var/task/public/dashboard/index.html'
+  ];
+  const filePath = possiblePaths.find(p => fs.existsSync(p));
+  if (filePath) return res.sendFile(filePath);
+  res.send('<h1>⚡ Enside Sistema Unificado</h1><p>API funcionando! Acesse <a href="/api/health">/api/health</a> ou <a href="/api/docs">/api/docs</a></p>');
+});
 app.use('/api/*', (req, res) => res.status(404).json({ erro: 'Endpoint não encontrado' }));
 app.use((err, req, res, next) => { console.error(err.message); res.status(500).json({ erro: 'Erro interno', detalhes: err.message }); });
 if (process.env.NODE_ENV !== 'production') { app.listen(process.env.PORT || 3000, () => console.log('🚀 Rodando!')); }
